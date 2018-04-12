@@ -21,12 +21,32 @@ public interface MyList<E> extends MyCollection<E>{
 	/**
 	 * 
 	 */
-	boolean contains(Object o);
+	boolean add(E e);
 	
 	/**
 	 * 
 	 */
-	boolean add(E e);
+	boolean remove(Object o);
+	
+	/**
+	 * Remove all of the elements from this list(optional operation).
+	 * This list will be empty after this call returns.
+	 * 
+	 * @throws UnsupportedOperationException if the <tt>clear</tt> operation
+	 * 			is not supported by this list
+	 */
+	void clear();
+	
+	
+	/**
+	 * 
+	 */
+	boolean equals(Object o);
+	
+	/**
+	 * 
+	 */
+	int hashCode();
 	
 	/**
 	 * Returns the element at the specified position in this list.
@@ -36,6 +56,21 @@ public interface MyList<E> extends MyCollection<E>{
 	 * @throws IndexOutOfBoundsException if the index is out of range
 	 */
 	E get(int index);
+	
+	/**
+	 * 
+	 * @param index
+	 * @param element
+	 * @return
+	 */
+	E set(int index, E element);
+	
+	/**
+	 * 
+	 * @param index
+	 * @param element
+	 */
+	void add(int index, E element);
 	
 	/**
 	 * 
@@ -52,9 +87,11 @@ public interface MyList<E> extends MyCollection<E>{
 	int indexOf(Object o);
 	
 	/**
-	 * Returns an iterator over the elements in this list in proper sequence
 	 * 
-	 * @return an iterator over the elements in this list in proper sequence
+	 * @param o
+	 * @return
 	 */
-	MyIterable<E> iterator();
+	int lastIndexOf(Object o);
+	
+
 }

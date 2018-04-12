@@ -28,10 +28,22 @@ public abstract class MyAbstractCollection<E> implements MyCollection<E>{
 	}
 	
 	/**
-	 * Returns an iterator over the elements contained in this collection.
 	 * 
-	 * @return an iterator over the elements contained in this collection
 	 */
-	public abstract MyIterable<E> iterator();
-		
+	public boolean remove(Object o) {
+		return false;
+	}
+	
+	/**
+	 * 
+	 */
+//	public Object[] toArray() {
+//		Object[] r = new Object[size()];
+//		MyIterable<E> it = iterator();
+//		for(int i = 0; i < r.length; i++) {
+//			if()
+//		}
+//		
+//	}
+	
 }

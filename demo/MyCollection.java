@@ -20,26 +20,38 @@ public interface MyCollection<E> extends MyIterable<E> {
 
 	/**
 	 * 
-	 * @param o
-	 * @return
-	 */
-	boolean contains(Object o);
-	
-	/**
-	 * 
 	 * @param e
 	 * @return
 	 */
 	boolean add(E e);
 	
 	/**
-	 * Return an MyIterator over the elements in this collection. There are no
-	 * guarantees concerning the order in which the elements are returned
-	 * (unless this collection is an instance of some class that provides a
-	 * guarantee).
 	 * 
-	 * @return an <tt>MyIterable</tt> over the elements in this collection
+	 * @param o
+	 * @return
 	 */
-	MyIterable<E> iterator();
+	boolean remove(Object o);
+	
+	/**
+	 * 
+	 * @param o
+	 * @return
+	 */
+	boolean equals(Object o);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	int hashCode();
+	
+	/**
+	 * Removes all of the elements from this collection(optional operation).
+	 * The collection will be empty after this method returns.
+	 * 
+	 * @throws UnsupportedOperationException if the <tt>clear</tt> operation
+	 * 			is not supported by this collection
+	 */
+	void clear();
 	
 }

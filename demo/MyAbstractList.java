@@ -6,7 +6,6 @@ public abstract class MyAbstractList<E> extends MyAbstractCollection<E> implemen
 	 * implicit)
 	 */
 	protected MyAbstractList() {
-		
 	}
 	
 	/**
@@ -19,6 +18,18 @@ public abstract class MyAbstractList<E> extends MyAbstractCollection<E> implemen
 	}
 	
 	/**
+	 * @throws IndexOutOfBoundsException
+	 */
+	public abstract E get(int index);
+	
+	/**
+	 * 
+	 */
+	public E set(int index, E element) {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
 	 * <p>This implementation always throws an UnsupportedOperationException
 	 * 
 	 * @throws UnsupportedOperationException 
@@ -28,12 +39,10 @@ public abstract class MyAbstractList<E> extends MyAbstractCollection<E> implemen
 	}
 	
 	/**
-	 * @throws IndexOutOfBoundsException
+	 * 
 	 */
-	public abstract E get(int index);
-	
-	public int indexOf(Object o) {
-		//TODO
-		return 0;
+	public E remove(int index) {
+		throw new UnsupportedOperationException();
 	}
+	
 }

@@ -1,8 +1,12 @@
 package com.tops.demo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 
@@ -68,10 +72,15 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 	 }
 	 
 	 /**
-	  * 
+	  * Trims the capacity of this ArrayList instance to be the
+	  * list's current size. An application can use this operation to minimize
+	  * the storage of an ArrayList instance.
 	  */
 	 public void trimToSize() {
-		 // TODO Auto-generated method stub
+//		 modCount++;
+		 if(size < elementData.length) {
+			 elementData = (size == 0) ? EMPTY_ELEMENTDATA : Arrays.copyOf(elementData, size);
+		 }
 	 }
 	
 	 /**
@@ -144,32 +153,56 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 	 }
 	 
 	 /**
+	  * Returns <tt>true</tt> if this list contains the specified element.
+	  * More formally, returns <tt>true</tt> if and only if this list contains
+	  * at least one element.
 	  * 
+	  * @param o element whose presence in this list is to be tested
+	  * @return <tt>true</tt> if this list contains the specified element
 	  */
-	 @Override
 	 public boolean contains(Object o) {
-		 // TODO Auto-generated method stub
-		 return false;
+		 return indexOf(o) >= 0;
 	 }
 	 
 	 /**
-	  * 
-	  * @param o
-	  * @return
+	  * Returns the index of the first occurrence of the specified element
+	  * in this list, or -1 if this list does not contain the element.
+	  * More formally, returns the lowest index <tt>i</tt> or -1 if there
+	  * is no such index.
 	  */
 	 public int indexOf(Object o) {
-		 // TODO Auto-generated method stub
-		 return 0;
+		 if(o == null) {
+			 for(int i = 0; i < size; i++) {
+				 if(elementData[i] == null)
+					 return i;
+			 }
+		 }else {
+			 for(int i = 0; i < size; i++) {
+				 if(o.equals(elementData[i]))
+					 return i;
+			 }
+		 }
+		 return -1;
 	 }
 	 
 	 /**
-	  * 
-	  * @param o
-	  * @return
+	  * Returns the index of the last occurrence of the specified element
+	  * in this list, or -1 if this list does not contain the element.
+	  * More formally returns the highest index <tt>i</tt> or -1 if there
+	  * is no such index.
 	  */
 	 public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		 return 0;
+		 if(o == null) {
+			 for(int i = size -1; i >= 0; i--)
+				 if(elementData[i] == null)
+					 return i;
+		 }else {
+			 for(int i = size -1; i >= 0; i--) {
+				 if(o.equals(elementData[i]))
+					 return i;
+			 }
+		 }
+		 return -1;
 	 }
 	 
 	 /**
@@ -221,13 +254,20 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 	 }
 	 
 	 /**
-	  * 
-	  * @param index
-	  * @param element
-	  * @return
+	  *	Replaces the elements at the specified position in this list with
+	  * the specified element.
+	  *  
+	  * @param index index of the element to replace
+	  * @param element element to be stored at the specified position
+	  * @return the element previously at the specified position
+	  * @throws IndexOutOfBoundsException
 	  */
 	 public E set(int index, E element) {
-		 return null;
+		 rangeCheck(index);
+		 
+		 E oldValue = elementData(index);
+		 elementData[index] = element;
+		 return oldValue;
 	 }
 	 
 	 /**
@@ -244,7 +284,13 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 	 }
 	 
 	 /**
+	  * Inserts the specified element at the specified position in this
+	  * list. Shifts the element currently at that position(if any) and
+	  * any subsequent elements to the rights(adds one to their indices).
 	  * 
+	  * @param index index at which the specified element is to be inserted
+	  * @param element element to be inserted
+	  * @throws IndexOutOfBoundsException
 	  */
 	 public void add(int index, E element) {
 		 rangeCheckForAdd(index);
@@ -282,28 +328,57 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 	 }
 	 
 	 /**
+	  * Remove the first occurrence of the specified element from this list,
+	  * if it is present. If the list does not contain the element, it is
+	  * unchanged. More formally, removes the element with the lowest index,
+	  * Returns true if this list contained the specified element
 	  * 
-	  * @param o
-	  * @return
+	  * @param o element to be removed from this list, if present
+	  * @return true if this list contained the specified element
 	  */
 	 public boolean remove(Object o) {
-		// TODO Auto-generated method stub
+		 if(o == null) {
+			 for(int index = 0; index < size; index++) {
+				 if(elementData[index] == null) {
+					 fastRemove(index);
+					 return true;
+				 }
+			 }
+		 }else {
+			 for(int index = 0; index < size; index++) {
+				 if(o.equals(elementData[index])) {
+					 fastRemove(index);
+					 return true;
+				 }
+			 }
+		 }
 		 return false;
 	 }
 	 
 	 /**
-	  * 
-	  * @param index
+	  * Private remove method that skips bounds checking and does not
+	  * return the value removed.
 	  */
 	 private void fastRemove(int index) {
-		// TODO Auto-generated method stub
+//		 modCount++
+		 int numMoved = size - index - 1;
+		 if(numMoved > 0)
+			 System.arraycopy(elementData, index + 1, elementData, index, numMoved);
+		 
+		 elementData[--size] = null; // clear to let GC do its work
 	 }
 	 
 	 /**
-	  * 
+	  * Removes all of the elements from this list. The list will
+	  * be empty after this call returns.
 	  */
 	 public void clear() {
-		// TODO Auto-generated method stub
+//		 modCount++
+		 
+		 for(int i = 0; i < size; i++)
+			 elementData[i] = null;
+		 
+		 size = 0;
 	 }
 	 
 	 /**
@@ -311,8 +386,8 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
 	  * @param c
 	  * @return
 	  */
-	 public boolean addAll(Collection<? extends E> c) {
-		// TODO Auto-generated method stub
+	 public boolean addAll(MyCollection<? extends E> c) {
+//		 c.to
 		 return false;
 	 }
 	 
@@ -429,16 +504,47 @@ public class MyArrayList<E> extends MyAbstractList<E> implements MyList<E> {
     	// TODO Auto-generated method stub
         return null;
     }
-	 
+    
+    /**
+     * Returns an iterator over the elements in this list in proper sequence
+     * 
+     * @return an iterator over the elements in this list in proper sequence
+     */
+	@Override
+	public Iterator<E> iterator() {
+		return new Itr();
+	}
+
 	/**
-	 * 
+	 * An optimized version of AbstractList.Itr
 	 */
-	 @Override
-	 public MyIterable<E> iterator() {
-		// TODO Auto-generated method stub
-		 return null;
-	 }
+	private class Itr implements Iterator<E>{
+		int cursor; 		//index of next element to return
+		int lastRet = -1; 	//index of last element returned; -1 if no such
+//		int expectedModCount = modCount;
+		
+		@Override
+		public boolean hasNext() {
+			return cursor != size;
+		}
 
-	
-
+		@SuppressWarnings("unchecked")
+		@Override
+		public E next() {
+//			
+			int i = cursor;
+			if(i >= size)
+				throw new NoSuchElementException();
+			Object[] elementData = MyArrayList.this.elementData;
+			if(i >= elementData.length)
+				throw new ConcurrentModificationException();
+			cursor = i + 1;
+			return (E) elementData[lastRet = i];
+		}
+		
+//		final void checkForComodification() {
+			
+//		}
+		
+	}
 }
